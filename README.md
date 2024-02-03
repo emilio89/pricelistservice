@@ -19,6 +19,11 @@ The PriceList Microservice provides an endpoint that accepts the following input
 4. Access Swagger UI to interact with the API:
    http://localhost:5555/pricelist-api.html
 
+### Swagger UI example
+
+![Swagger UI example](docs/images/swagger.png)
+
+
 ### Running the Tests
 Execute the following command to run the tests:
 ```mvn test```

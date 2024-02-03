@@ -1,6 +1,7 @@
 package com.testemilio.pricelistservice.application.service;
 
 import com.testemilio.pricelistservice.application.port.repository.PriceRepository;
+import com.testemilio.pricelistservice.domain.exception.InvalidDateFormatException;
 import com.testemilio.pricelistservice.domain.exception.PriceNotFoundException;
 import com.testemilio.pricelistservice.domain.model.Price;
 import com.testemilio.pricelistservice.domain.model.PriceId;
@@ -12,17 +13,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.slf4j.Logger;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.util.AssertionErrors;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.Collections;
 import java.util.List;
 
@@ -84,8 +79,20 @@ class PriceServiceImplTest {
     @Test
     @DisplayName("Test exception handling for invalid date format")
     void testExceptionHandlingForInvalidDate() {
-        Exception exception = Assertions.assertThrows(PriceNotFoundException.class, () ->
+        Exception exception = Assertions.assertThrows(InvalidDateFormatException.class, () ->
                 priceService.getTopPriceFilterByBrandIdAndProductIdAndDate(1, 1, "invalid-date"));
+
+        Assertions.assertTrue(exception.getMessage().contains("Invalid date format: invalid-date"));
+    }
+
+    @Test
+    @DisplayName("Test exception handling for error")
+    void testExceptionHandlingForError() {
+        when(priceRepository.findTopPriorityPriceWithBrandIdProductIdAndIsBetweenDates(anyInt(), anyInt(), any(LocalDateTime.class), any(PageRequest.class)))
+                .thenThrow(PriceNotFoundException.class);
+
+        Exception exception = Assertions.assertThrows(PriceNotFoundException.class, () ->
+                priceService.getTopPriceFilterByBrandIdAndProductIdAndDate(1, 1, "2024-02-02-10.00.00"));
 
         Assertions.assertTrue(exception.getMessage().contains("Unable to retrieve Price"));
     }
