@@ -48,3 +48,10 @@ A good example of a PR created as a sample is:
 
 Unit tests have been created for the service and controller, and integration tests using TestContainers to ensure the integrated functionality of the entire system.
 
+## Example execution tests
+Example of execution of the integration tests requested in the practice 
+![Integration tests](docs/images/exampleTest.png)
+
+Example additional unit tests
+![PriceController unit tests](docs/images/PriceControllerTest.png)
+![PriceController unit tests](docs/images/PriceServiceImplTest.png)
