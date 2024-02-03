@@ -55,3 +55,15 @@ Example of execution of the integration tests requested in the practice
 Example additional unit tests
 ![PriceController unit tests](docs/images/PriceControllerTest.png)
 ![PriceController unit tests](docs/images/PriceServiceImplTest.png)
+
+
+## Application Deployment Address
+
+The application is deployed at: [https://pricelistservice.onrender.com/pricelist-api.html](https://pricelistservice.onrender.com/pricelist-api.html)
+
+### Deployment Details
+
+To demonstrate the functionality of the created endpoint, the application has been deployed on a free server using Docker. This is primarily for testing and demonstration purposes.
+
+**Note on Availability:**
+As the application is hosted on a free server, 100% uptime cannot be guaranteed. This means there might be occasional downtimes due to server limitations or maintenance periods. We appreciate your understanding and recommend considering this while testing and using the application.
