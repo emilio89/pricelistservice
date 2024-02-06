@@ -1,11 +1,13 @@
 package com.testemilio.pricelistservice.application.service;
 
-import com.testemilio.pricelistservice.application.port.repository.PriceRepository;
+import com.testemilio.pricelistservice.application.port.repository.PriceDomainRepository;
 import com.testemilio.pricelistservice.domain.exception.InvalidDateFormatException;
+import com.testemilio.pricelistservice.domain.exception.PriceException;
 import com.testemilio.pricelistservice.domain.exception.PriceNotFoundException;
 import com.testemilio.pricelistservice.domain.model.Price;
 import com.testemilio.pricelistservice.domain.model.PriceId;
 import com.testemilio.pricelistservice.infraestructure.dto.PriceResponseDTO;
+import com.testemilio.pricelistservice.infraestructure.persistence.PriceRepositoryAdapter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -26,15 +29,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class PriceServiceImplTest {
     @Mock
-    private PriceRepository priceRepository;
+    PriceRepositoryAdapter priceRepositoryAdapter;
 
     @InjectMocks
     private PriceServiceImpl priceService;
-
-    @BeforeEach
-    void setUp() {
-        ReflectionTestUtils.setField(priceService, "dateFormatPattern", "yyyy-MM-dd-HH.mm.ss");
-    }
 
     private Price initializePrice() {
         LocalDateTime startDate = LocalDateTime.MIN;
@@ -53,49 +51,30 @@ class PriceServiceImplTest {
     @Test
     @DisplayName("Test successful retrieval of top price")
     void testGetTopPriceSuccess() {
-        String date = "2024-02-02-10.00.00";
+        LocalDateTime date = LocalDateTime.now();
         Integer brandId = 1;
         Integer productId = 1;
         Price price = initializePrice();
         List<Price> mockPriceList = Collections.singletonList(price);
-        when(priceRepository.findTopPriorityPriceWithBrandIdProductIdAndIsBetweenDates(eq(brandId), eq(productId), any(LocalDateTime.class), any(PageRequest.class)))
+        when(priceRepositoryAdapter.findTopPriorityPriceWithBrandIdProductIdAndIsBetweenDates(eq(brandId), eq(productId), any(LocalDateTime.class), any(PageRequest.class)))
                 .thenReturn(mockPriceList);
         PriceResponseDTO result = priceService.getTopPriceFilterByBrandIdAndProductIdAndDate(brandId, productId, date);
         Assertions.assertNotNull(result);
-        verify(priceRepository, times(1)).findTopPriorityPriceWithBrandIdProductIdAndIsBetweenDates(eq(brandId), eq(productId), any(LocalDateTime.class), any(PageRequest.class));
+        verify(priceRepositoryAdapter, times(1)).findTopPriorityPriceWithBrandIdProductIdAndIsBetweenDates(eq(brandId), eq(productId), any(LocalDateTime.class), any(PageRequest.class));
     }
 
     @Test
     @DisplayName("Test no price found")
     void testNoPriceFound() {
-        when(priceRepository.findTopPriorityPriceWithBrandIdProductIdAndIsBetweenDates(anyInt(), anyInt(), any(LocalDateTime.class), any(PageRequest.class)))
-                .thenReturn(Collections.emptyList());
-
-        PriceResponseDTO result = priceService.getTopPriceFilterByBrandIdAndProductIdAndDate(1, 1, "2024-02-02-10.00.00");
-
-        Assertions.assertNull(result);
-    }
-
-    @Test
-    @DisplayName("Test exception handling for invalid date format")
-    void testExceptionHandlingForInvalidDate() {
-        Exception exception = Assertions.assertThrows(InvalidDateFormatException.class, () ->
-                priceService.getTopPriceFilterByBrandIdAndProductIdAndDate(1, 1, "invalid-date"));
-
-        Assertions.assertTrue(exception.getMessage().contains("Invalid date format: invalid-date"));
-    }
-
-    @Test
-    @DisplayName("Test exception handling for error")
-    void testExceptionHandlingForError() {
-        when(priceRepository.findTopPriorityPriceWithBrandIdProductIdAndIsBetweenDates(anyInt(), anyInt(), any(LocalDateTime.class), any(PageRequest.class)))
+        LocalDateTime date = LocalDateTime.now();
+        when(priceRepositoryAdapter.findTopPriorityPriceWithBrandIdProductIdAndIsBetweenDates(anyInt(), anyInt(), any(LocalDateTime.class), any(PageRequest.class)))
                 .thenThrow(PriceNotFoundException.class);
 
-        Exception exception = Assertions.assertThrows(PriceNotFoundException.class, () ->
-                priceService.getTopPriceFilterByBrandIdAndProductIdAndDate(1, 1, "2024-02-02-10.00.00"));
+        Assertions.assertThrows(PriceNotFoundException.class, () ->
+                priceService.getTopPriceFilterByBrandIdAndProductIdAndDate(1, 1, date));
 
-        Assertions.assertTrue(exception.getMessage().contains("Unable to retrieve Price"));
     }
+
 
 }
 

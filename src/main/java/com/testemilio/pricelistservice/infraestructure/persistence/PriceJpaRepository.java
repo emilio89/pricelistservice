@@ -1,6 +1,6 @@
 package com.testemilio.pricelistservice.infraestructure.persistence;
 
-import com.testemilio.pricelistservice.application.port.repository.PriceRepository;
+import com.testemilio.pricelistservice.application.port.repository.PriceDomainRepository;
 import com.testemilio.pricelistservice.domain.model.Price;
 import com.testemilio.pricelistservice.domain.model.PriceId;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface PriceRepositoryImpl extends JpaRepository<Price, PriceId>, PriceRepository {
+public interface PriceJpaRepository extends JpaRepository<Price, PriceId>, PriceDomainRepository {
     @Override
     @Query("SELECT p FROM Price p WHERE p.id.brandId = :brandId " +
             " AND p.id.productId = :productId " +

@@ -53,7 +53,6 @@ Example of execution of the integration tests requested in the practice
 ![Integration tests](docs/images/exampleTest.png)
 
 Example additional unit tests
-![PriceController unit tests](docs/images/PriceControllerTest.png)
 ![PriceController unit tests](docs/images/PriceServiceImplTest.png)
 
 
