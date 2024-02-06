@@ -1,6 +1,7 @@
 package com.testemilio.pricelistservice.infraestructure.web;
 
 import com.testemilio.pricelistservice.application.port.service.PriceService;
+import com.testemilio.pricelistservice.infraestructure.dto.ExceptionDTO;
 import com.testemilio.pricelistservice.infraestructure.dto.PriceResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,7 +43,8 @@ public class PriceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "successful operation",
                     content = @Content(schema = @Schema(implementation = PriceResponseDTO.class))),
-            @ApiResponse(responseCode = "404", description = "price not found not found")})
+            @ApiResponse(responseCode = "404", description = "price not found not found",
+            content = @Content(schema = @Schema(implementation = ExceptionDTO.class)))})
     @GetMapping(value = "pricelist/brands/{brandId}/products/{productId}")
     public ResponseEntity<PriceResponseDTO> getPriceListWithFilters(
             @Parameter(
