@@ -6,6 +6,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper
 public interface PriceMapper {
     PriceMapper INSTANCE = Mappers.getMapper(PriceMapper.class);
@@ -17,5 +19,7 @@ public interface PriceMapper {
     @Mapping(source = "price.id.productId", target = "productId")
     @Mapping(source = "price.finalPrice", target = "price")
     PriceResponseDTO priceToPriceResponseDTO(Price price);
+
+    List<PriceResponseDTO> pricesToPriceResponseDTOs(List<Price> prices);
 
 }
